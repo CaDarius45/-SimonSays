@@ -1,155 +1,129 @@
 /*------------------------------------variables-----------------------------------------*/
-let win,turn,select,difficult,codes,tests,orders,rowNum,checkCount
+let end,difficult,simonsList,round, seconds
 /*-----------------------------------------querySelector--------------------------------*/
-// function getOne(get) {return document.querySelector(get)}
 function getOne(selecto) {return document.querySelector(selecto)}
 function getAll(getAll) {return document.querySelectorAll(getAll)}
+function getId(getId) {return document.getElementById(getId)}
 /*-------------------------------------screeen html elements--------------------------------*/
-const stratMenu = getOne('#startPage')
-const howToScreen = getOne('#howToPage')
 const gameScreen = getOne('#gamePage')
 /*------------------------------------Button html elements-------------------------------------*/
-const play = getOne('#playButton')
-const howTo = getOne('#howToButton')
-const back = getOne('#backButton')
+const start = getOne('#startButton')
 const reset = getOne('#resetButton')
-const checkButton = getOne('#checkButton')
 /*-------------------------------------------other html elements----------------------------------*/
-const colors = getAll('.color')
+const code = getAll('.code')
 const combos = getAll('.combo')
 const checks = getAll('.check')
-const master = getOne('#master')
 const masterCode = getAll('.masterCode')
-const wonSound = getOne('#won')
-const lostSound = getOne('#lost')
-const startTheme = getOne('#theme')
+const roundNum = getOne('#roundNum')
+
+const c1 = getId('c1');
+const c2 = getId('c2');
+const c3 = getId('c3');
+const c4 = getId('c4');
 /*---------------------------------event listeners for the buttons------------------------------------------*/
-play.addEventListener('click', () =>{stratMenu.style.display = 'none';gameScreen.style.display = 'grid';startGame()})
-howTo.addEventListener('click', () => {howToScreen.style.display = 'block',gameScreen.style.display = 'none'})
-back.addEventListener('click', () =>{howToScreen.style.display = 'none',gameScreen.style.display = 'grid'})
+start.addEventListener('click',startGame)
 reset.addEventListener('click',playAgain)
-checkButton.addEventListener('click', checkCode)
 
-combos.forEach(element => {
-    element.addEventListener('click', setCombo)
+code.forEach(element => {
+    element.addEventListener('click', checkList)
 });
 
-colors.forEach(element => {
-    element.addEventListener('click', (event) => {select = event.target.id})
-});
+function clickButton() {
+    document.querySelector('#c1').click();
+    console.log(1)
+}
 
+// Simulate a click every second
+//setInterval(clickButton, 1000);
+
+createGame();
 /*-------------------------------- Functions --------------------------------*/
-function startGame(){
-    gameScreen.style.display = 'grid';
+function createGame(){
     difficult = 4
-    codes = []
-    tests = [null,null,null,null]
-    select = ''
-    win = false
-    turn = 9
-    rowNum = 1
-    checkCount= 0
-    createCode()
+    simonsList = []
+    round = 0
+    seconds = 0
+    end = false
+}
+ 
+function startGame(){
+    
+    round++
+    roundNum.textContent = round
+    simonPick()
+    displayList()
+    
 } 
-//sets the color of player choice into the spot they picked
-function setCombo(event){
-    const hold = event.target.id
-    if (event.target.parentNode.id == `try${rowNum}`) {
+
+//Picks a random color and adds it to the list
+function simonPick() {
+    simonsList.push(code[Math.floor(Math.random()*code.length)].id) 
+    // console.log(simonsList)
+}
+
+function checkList(event) {
+    const pick = event.target.id
+
+    console.log(event.target.id);
+
+    if (event.target.parentNode.id == `try${roundNum}`) {
         event.target.style.backgroundColor = select;
         tests.splice(hold,1,select)
     }
 }
-//sets the master code
-function createCode() {
-    for (let i = 0; i < difficult; i++) {
-        codes.push(colors[Math.floor(Math.random()*colors.length)].id) 
-        masterCode[i].style.backgroundColor = codes[i]
-    }
+
+// play animations
+function glowwing(elm,glo) {
+    // Apply the animation class
+    elm.classList.add(`${glo}`);
+
+    // Listen for the end of the animation
+    elm.addEventListener('animationend', function() {
+      // Remove the animation class after the animation ends
+      elm.classList.remove(`${glo}`);
+    }); // Ensures the event listener is triggered only once
 }
-//
-function checkCode() {
-    if(tests.includes(null) && win == false) {return}
-    checkResults()
-    checkVictory()
-    tests = [null,null,null,null]
+
+//High lights simons list of colors
+function displayList() {
+
+
+    const time = setInterval(() => {
+        seconds++;
+        if (seconds > round){
+            console.log('roundStop');
+            seconds = 0;
+            clearInterval(time);
+        }
+        else{
+            switch (simonsList[seconds-1]) {
+                case 'c1':
+                     console.log('c1')
+                     glowwing(c1,'glowing-red');
+                    break;
+                 case 'c2':
+                     console.log('c2')
+                     glowwing(c2,'glowing-blue');
+                      break;
+                case 'c3':
+                    console.log('c3')
+                    glowwing(c3,'glowing-green');
+                     break;
+                case 'c4':
+                    console.log('c4')
+                    glowwing(c4,'glowing-yellow');
+                    break;
+                default:
+                    break;
+            }  
+        } 
+    }, 1000); 
 }
 
 function checkResults(){
-    turn--
-    orders = codes.slice()
-    let base = 0
-
-    orders.forEach((x,y) => {
-        if (x == tests[y]) { 
-            checks[checkCount + base].style.backgroundColor = 'black'
-            orders.splice(y,1,true)
-            base++
-        }
-    })
-
-    if (orders.every(x => x == true)) {
-        return win = true
-    }else{
-        for (let i = 0; i < codes.length; i++) {
-            if(orders.find(e => e == tests[i])){
-                const index = orders.indexOf(tests[i])
-                checks[checkCount + base].style.backgroundColor = 'grey'
-                orders.splice(index,1,false)
-                base++
-            }
-        }
-    } 
-    checkCount+=4
-    rowNum++
-}
-
-function checkVictory() {
-    if (win) {
-        setWin()
-        return  
-    }else if(turn <= 0){
-        setLose()
-       return
-    }
+   
 }
 
 function playAgain(){
-    wonSound.pause()
-    lostSound.pause()
-    combos.forEach((x,y) => {
-        x.style.backgroundColor = 'white'
-        checks[y].style.backgroundColor = 'white'
-    });
-    reset.style.visibility = 'hidden'
-    hideCode()
     startGame()
-}
-
-function hideCode(){
-    masterCode.forEach(x => {
-        x.style.visibility = x.style.visibility === 'visible' ? 'hidden' : 'visible'
-    });
-}
-
-function setWin()
-{
-    rowNum = 0
-    masterCode[0].textContent = 'W'
-    masterCode[1].textContent = 'I'
-    masterCode[2].textContent = 'N'
-    masterCode[3].textContent = '!'
-    wonSound.play()
-    reset.style.visibility = 'visible'
-    hideCode()
-}
-
-function setLose(){
-    rowNum = 0
-    masterCode[0].textContent = 'L'
-    masterCode[1].textContent = 'O'
-    masterCode[2].textContent = 'S'
-    masterCode[3].textContent = 'T'
-    lostSound.play()
-    reset.style.visibility = 'visible'
-    hideCode()
 }

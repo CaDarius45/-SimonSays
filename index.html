@@ -10,29 +10,36 @@
     <link href="Images/color_twister.gif" rel="icon">
     <link href="https://fonts.googleapis.com/css2?family=Bungee+Shade&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Jersey+10&family=Sedan:ital@0;1&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tiny5&display=swap" rel="stylesheet">
     <link href="CSS/style.css" rel="stylesheet">
     <script defer src="JS/app.js"></script>
 </head>
 
 <body>
-    <section id="startPage">
-        <h1 id="title">Simon Says</h1>
-        <button id="playButton">Play</button>
-    
-        <h1 id="instruction">Instructions</h1>
-        <ul>
-            <li><p>Simon will give you a set of pattens. All you got to do is repeat them in the dame order</p></li>
-        </ul>
-    </section>
-    
     <section id="gamePage">
+        <h1 id="title">Simon Says</h1>
+        <div>
+            <h4 id="instruction">Instructions</h4>
+            <ul>
+                <li><p>Simon will give you a set of patterns. All you got to do is repeat them in the game order</p></li>
+            </ul>
+
+            <h1>Round <span id="roundNum">0</span></h1>
+
+            <h5>Reference</h5>
+            <a href="https://pixabay.com/users/jghr053-23224676/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=7991">audio</a>
+        </div>
+
         <div id="board">
             <h4 id="resultMessage">Simons Turn</h4>
+
             <div class="code" id="c1">1</div>
             <div class="code" id="c2">2</div>
             <div class="code" id="c3">3</div>
             <div class="code" id="c4">4</div>
         </div>
+        
+        <button id="startButton">Start</button>  
         <button id="resetButton">Play Again</button>   
     </section>
 </body>

@@ -20,6 +20,11 @@ const c1 = getId('c1');
 const c2 = getId('c2');
 const c3 = getId('c3');
 const c4 = getId('c4');
+
+const sayRed = getId('redVoice');
+const sayBlue = getId('blueVoice');
+const sayGreen = getId('greenVoice');
+const sayYellow = getId('yellowVoice');
 /*---------------------------------event listeners for the buttons------------------------------------------*/
 start.addEventListener('click',startGame)
 reset.addEventListener('click',playAgain)
@@ -74,19 +79,27 @@ function checkList(event) {
 
 // play animations
 function glowwing(elm,glo) {
-    // Apply the animation class
+    // Apply the animation
     elm.classList.add(`${glo}`);
 
     // Listen for the end of the animation
     elm.addEventListener('animationend', function() {
-      // Remove the animation class after the animation ends
+      // Remove the animation after it ends
       elm.classList.remove(`${glo}`);
-    }); // Ensures the event listener is triggered only once
+    });
 }
+
+function disableClicks() {
+    document.body.style.pointerEvents = 'none';  // Disable clicks
+  }
+  
+  function enableClicks() {
+    document.body.style.pointerEvents = 'auto';  // Enable clicks
+  }
 
 //High lights simons list of colors
 function displayList() {
-
+    disableClicks();
 
     const time = setInterval(() => {
         seconds++;
@@ -94,23 +107,28 @@ function displayList() {
             console.log('roundStop');
             seconds = 0;
             clearInterval(time);
+            enableClicks();
         }
         else{
             switch (simonsList[seconds-1]) {
                 case 'c1':
                      console.log('c1')
+                     sayRed.cloneNode(true).play();
                      glowwing(c1,'glowing-red');
                     break;
                  case 'c2':
                      console.log('c2')
+                     sayBlue.cloneNode(true).play();
                      glowwing(c2,'glowing-blue');
                       break;
                 case 'c3':
                     console.log('c3')
+                    sayGreen.cloneNode(true).play();
                     glowwing(c3,'glowing-green');
                      break;
                 case 'c4':
                     console.log('c4')
+                    sayYellow.cloneNode(true).play();
                     glowwing(c4,'glowing-yellow');
                     break;
                 default:
